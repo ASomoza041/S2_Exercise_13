@@ -58,6 +58,7 @@ window.onload = init;
 
 
 var puzzleCells;
+var cellBackground;
 
 
 function init() {
@@ -75,6 +76,11 @@ function init() {
 
       setupPuzzle();
 }
+
+//add an event listener for the mouse up event.
+document.addEventListener("mouseup", endBackground);
+
+
 
 function swapPuzzle(e) {
       //retrieve the id of the clicked button.
@@ -110,6 +116,30 @@ function setupPuzzle() {
       //set initial color of each cell to gold.
       for (var i = 0; i < puzzleCells.length; i++) {
             puzzleCells[i].style.backgroundColor = "rgb(233, 207, 29)";
+            // set the cell background color in response to the mouse down event.
+            puzzleCells[i].onmousedown = setBackground;
+      }
+}
+
+function setBackground(e) {
+      cellBackground = "rgb(101, 101, 101)";
+      e.target.style.backgroundColor = cellBackground;
+
+      //create an event listener for every puzzle cell.
+      for (var i = 0; i < puzzleCells.length; i++) {
+            puzzleCells[i].addEventListener("mouseenter", extendBackground);
+      }
+}
+
+//create a function to extend the background and set a new background color.
+function extendBackground(e) {
+      e.target.style.backgroundColor = cellBackground;
+}
+
+function endBackground() {
+      //remove event listener for every table cell.
+      for (var i = 0; i < puzzleCells.length; i++) {
+            puzzleCells[i].removeEventListener("mouseenter", extendBackground);
       }
 }
 

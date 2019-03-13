@@ -90,29 +90,33 @@ function init() {
 }
 
 function swapPuzzle(e) {
-      //retrieve the id of the clicked button.
-      var puzzleID = e.target.id;
+      if (confirm("You will lose all of your work on the puzzle! Continue?")) {
 
-      //retrieve the value of the clicked button.
-      var puzzleTitle = e.target.value;
-      document.getElementById("puzzleTitle").innerHTML = puzzleTitle;
 
-      //display the puzzle based on the value of the puzzle id variable.
-      switch (puzzleID) {
-            case "puzzle1":
-                  document.getElementById("puzzle").innerHTML = drawPuzzle(puzzle1Hint, puzzle1Rating, puzzle1);
+            //retrieve the id of the clicked button.
+            var puzzleID = e.target.id;
 
-                  break;
-            case "puzzle2":
-                  document.getElementById("puzzle").innerHTML = drawPuzzle(puzzle2Hint, puzzle2Rating, puzzle2);
+            //retrieve the value of the clicked button.
+            var puzzleTitle = e.target.value;
+            document.getElementById("puzzleTitle").innerHTML = puzzleTitle;
 
-                  break;
-            case "puzzle3":
-                  document.getElementById("puzzle").innerHTML = drawPuzzle(puzzle3Hint, puzzle3Rating, puzzle3);
+            //display the puzzle based on the value of the puzzle id variable.
+            switch (puzzleID) {
+                  case "puzzle1":
+                        document.getElementById("puzzle").innerHTML = drawPuzzle(puzzle1Hint, puzzle1Rating, puzzle1);
 
-                  break;
+                        break;
+                  case "puzzle2":
+                        document.getElementById("puzzle").innerHTML = drawPuzzle(puzzle2Hint, puzzle2Rating, puzzle2);
+
+                        break;
+                  case "puzzle3":
+                        document.getElementById("puzzle").innerHTML = drawPuzzle(puzzle3Hint, puzzle3Rating, puzzle3);
+
+                        break;
+            }
+            setupPuzzle();
       }
-      setupPuzzle();
 }
 
 
@@ -135,10 +139,41 @@ function setupPuzzle() {
       //create an event listener to highlight incorrect cells
       document.getElementById("peek").addEventListener("click", function () {
             //display incorrect white cells in pink
-            for (var ic = 0; i < filled.length; i++) {
+            for (var i = 0; i < filled.length; i++) {
                   if (filled[i].style.backgroundColor === "rgb(255, 255, 255)") {
                         filled[i].style.backgroundColor = "rgb(255, 211, 211)";
                   }
+            }
+            //display ncorrect cells in red.
+            for (var i = 0; i < empty.length; i++) {
+                  if (empty[i].style.backgroundColor === "rgb(101, 101, 101)") {
+                        empty[i].style.backgroundColor = "rgb(255, 101, 101)";
+                  }
+            }
+            //remove the hints after 0.5 secs.
+            setTimeout(function () {
+                  //change pink cells into white and red cells into grey.
+                  for (var i = 0; i < puzzleCells.length; i++) {
+                        if (puzzleCells[i].style.backgroundColor === "rgb(255, 211, 211)") {
+                              puzzleCells[i].style.backgroundColor = "rgb(255, 255, 255)";
+                        }
+                        if (puzzleCells[i].style.backgroundColor === "rgb(255, 101, 101)") {
+                              puzzleCells[i].style.backgroundColor = "rgb(101, 101, 101)";
+                        }
+                  }
+            }, 500);
+      });
+      //check puzzle solution
+      document.getElementById("hanjieGrid").addEventListener("mouseup", function () {
+            var solved = true;
+            for (var i = 0; i < puzzleCells.length; i++) {
+                  if ((puzzleCells[i].className === "filled" && puzzleCells[i].style.backgroundColor != "rgb(101, 101, 101)") || (puzzleCells[i].className === "empty" && puzzleCells[i].style.backgroundColor === "rgb(101, 101, 101)")) {
+                        solved = false;
+                        break;
+                  }
+            }
+            if (solved) {
+                  alert("You solved the PUZZLE!");
             }
       });
 }
@@ -155,7 +190,7 @@ function setBackground(e) {
             cursorType = "url(jpf_cross.png), crosshair";
       } else {
             cellBackground = "rgb(101, 101, 101)";
-            cursorType = "url(jpf_pencil.png, pointer)";
+            cursorType = "url(jpf_pencil.png), pointer";
       }
       e.target.style.backgroundColor = cellBackground;
 
